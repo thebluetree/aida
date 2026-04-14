@@ -8,6 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AIDA 2027" />
   <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIkFJREEgMjAyNyIsICJzaG9ydF9uYW1lIjogIkFJREEgMjAyNyIsICJkZXNjcmlwdGlvbiI6ICJDb3VudGRvd24genVyIEFJREEgTm9yZGF0bGFudGlrLVJlaXNlIDIwMjciLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgIm9yaWVudGF0aW9uIjogInBvcnRyYWl0IiwgImJhY2tncm91bmRfY29sb3IiOiAiIzAwMDAwMCIsICJ0aGVtZV9jb2xvciI6ICIjMDAwMDAwIiwgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyBmaWxsPSclMjMwMDAnLz48dGV4dCB5PSc1NScgeD0nNTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nNDAnIGZvbnQtZmFtaWx5PSdBcmlhbCcgZm9udC13ZWlnaHQ9JzkwMCc+PHRzcGFuIGZpbGw9JyUyM0NDMzMwMCc+QTwvdHNwYW4+PHRzcGFuIGZpbGw9JyUyMzMzOTlDQyc+STwvdHNwYW4+PHRzcGFuIGZpbGw9JyUyM0NDMzMwMCc+RDwvdHNwYW4+PHRzcGFuIGZpbGw9JyUyM0ZGQ0MwMCc+QTwvdHNwYW4+PC90ZXh0Pjwvc3ZnPiIsICJzaXplcyI6ICJhbnkiLCAidHlwZSI6ICJpbWFnZS9zdmcreG1sIiwgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIn1dfQ==" />
   <title>AIDA 2027</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -169,7 +170,17 @@ function tick(){
 }
 tick();setInterval(tick,60000);
 
-window.addEventListener("load",()=>{setTimeout(()=>{document.getElementById("splash").classList.add("hide");},900);});
+window.addEventListener("load",()=>{
+  setTimeout(()=>{document.getElementById("splash").classList.add("hide");},900);
+  // Service Worker registrieren für PWA-Vollbild
+  if("serviceWorker" in navigator){
+    const sw=`data:text/javascript;base64,CnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignaW5zdGFsbCcsIGUgPT4gc2VsZi5za2lwV2FpdGluZygpKTsKc2VsZi5hZGRFdmVudExpc3RlbmVyKCdhY3RpdmF0ZScsIGUgPT4gY2xpZW50cy5jbGFpbSgpKTsKc2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGUgPT4gZS5yZXNwb25kV2l0aChmZXRjaChlLnJlcXVlc3QpKSk7Cg==`;
+    fetch(sw).then(r=>r.blob()).then(blob=>{
+      const url=URL.createObjectURL(blob);
+      navigator.serviceWorker.register(url,{scope:"."}).catch(()=>{});
+    }).catch(()=>{});
+  }
+});
 </script>
 </body>
 </html>
